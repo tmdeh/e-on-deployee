@@ -1,25 +1,41 @@
-// src/contexts/AuthContext.jsx
 import { createContext, useEffect, useState } from 'react';
-import api from "../api/api";
+import api from '../api/api';
+
+
 export const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // { username: "jungho", ... }
+function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
 
-  const login = (userData) => {
-    setUser(userData); // 로그인 시 유저 데이터 저장
+  const signup = async ({ name, email, age, code, password, confirm }) => {
+    const res = await api.post('/auth/join/step3', {
+      name, email, age, code, password, confirm
+    });
+    setUser(res.data.user);
+    return res.data;
   };
 
-  const logout = () => {
+  const login = async ({ email, password }) => {
+    const res = await api.post('/auth/login', { email, password });
+    setUser(res.data.user);
+    return res.data;
+  };
+
+  const logout = async () => {
+    await api.post('/auth/logout');
     setUser(null);
   };
 
-  const signup = data => api.post('/auth/join/step3', data);
+  useEffect(() => {
+    const refresh = async() => {
+      const res = await api.get('/auth/refresh');
+      setUser(res.data.user);
+    }
+    refresh();
+  }, []);
 
-  const isLoggedIn = !!user;
-  
   return (
-    <AuthContext.Provider value={{ user, login, logout, signup, isLoggedIn }}>
+    <AuthContext.Provider value={{ user, signup, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

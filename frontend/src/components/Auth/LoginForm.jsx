@@ -11,7 +11,7 @@ export default function LoginForm({ onSuccess }) {
     e.preventDefault();
     setError('');
     try {
-      await login(email, password);
+      await login({email, password});
       onSuccess();
     } catch (err) {
       setError(err.response?.data?.message || '로그인 실패');

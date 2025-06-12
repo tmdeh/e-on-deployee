@@ -6,7 +6,11 @@ const User         = require('../models/User');
 
 // 1단계: 회원 구분 저장
 exports.signupStep1 = (req, res) => {
-  req.session.signup = { type: req.body.userType };  // -> 모델의 'type' 컬럼과 매칭
+  const { userType } = req.body;
+  if(userType === 'admin') {
+    return res.status(403).json({message: "권한이 없습니다."});
+  } 
+  req.session.signup = { type: userType };  // -> 모델의 'type' 컬럼과 매칭
   res.json({ success: true });
 };
 
@@ -123,3 +127,9 @@ exports.logout = (req, res, next) => {
     });
   });
 };
+
+exports.refresh = async (req, res) => {
+  const userId = req.session.passport.user;
+  const user = await User.findByPk(userId);
+  return res.json({success: true, user: user.toJSON()});
+}

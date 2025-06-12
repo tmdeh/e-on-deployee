@@ -15,4 +15,6 @@ router.post('/login', authCtrl.login);
 // 로그아웃
 router.post('/logout', authCtrl.logout);
 
+router.get("/refresh", authCtrl.refresh)
+
 module.exports = router;
