@@ -71,8 +71,8 @@ export default function SignupForm({ onFinish }) {
             value={data.type}
             onChange={e => setData({ ...data, type: e.target.value })}
           >
+            // 학생,부모로만 받게 수정 
             <option value="student">학생</option>
-            <option value="middle">중학생</option>
             <option value="parent">부모</option>
           </select>
           <button onClick={next1}>다음</button>

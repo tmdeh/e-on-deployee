@@ -31,8 +31,11 @@ const User = sequelize.define('User', {
     allowNull: false,
   },
   type: {
-    type: DataTypes.ENUM('student', 'admin', 'guest'),
+    type: DataTypes.ENUM('student','parent','admin'),
     allowNull: false,
+    validate: {
+      isIn: [['student','parent','admin']]
+    }
   },
   state_code: {
     type: DataTypes.STRING(100),
