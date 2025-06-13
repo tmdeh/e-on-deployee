@@ -5,9 +5,9 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 const PrivateRoutes = ({ children }) => {
-    const { isLoggedIn } = useAuth();
+    const { user } = useAuth();
     // 로그인 된 상태면 children을 보여주고, 로그인 안된 상태면 로그인 페이지로 이동
-    return isLoggedIn ? children : <Navigate to="/login" />;
+    return user ? children : <Navigate to="/login" />;
 }
 
 export default PrivateRoutes;

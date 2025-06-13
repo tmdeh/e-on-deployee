@@ -8,17 +8,10 @@ const User         = require('../models/User');
 // 1단계: 회원 구분 저장
 exports.signupStep1 = (req, res) => {
   const { userType } = req.body;
-<<<<<<< HEAD
-  if(userType === 'admin') {
-    return res.status(403).json({message: "권한이 없습니다."});
-  } 
-  req.session.signup = { type: userType };  // -> 모델의 'type' 컬럼과 매칭
-=======
   if (!VALID_USER_TYPES.includes(userType)){
     return res.status(400).json({massage : '유효하지 않은 회원 유형' });
   }
   req.session.signup = {type : userType};
->>>>>>> 106e6ac (modify user type)
   res.json({ success: true });
 };
 

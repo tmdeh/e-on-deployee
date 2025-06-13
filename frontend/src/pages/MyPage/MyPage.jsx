@@ -1,9 +1,15 @@
 // MyPage/MyPage.jsx
 
+import ChangePassword from "./ChangePassword";
+import DeactivateAccount from "./DeactivateAccount";
+import MyInfo from "./MyInfo";
+
 const MyPage = () => {
     return (
         <div>
-            <h1>MyPage</h1>
+            <MyInfo />
+            <DeactivateAccount />
+            <ChangePassword />
         </div>
     );
 }

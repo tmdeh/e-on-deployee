@@ -51,7 +51,7 @@ export default function Header() {
                     {user ? (
                         <>   
                         <li className={styles.navItem}>
-                            <Link to={`/myPage/${user.id}`} className={styles.navLink}>
+                            <Link to={`/myPage/${user.user_id}`} className={styles.navLink}>
                                 마이페이지
                             </Link>
                         </li>

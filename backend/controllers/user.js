@@ -37,17 +37,18 @@ exports.updateMyInfo = async (req, res, next) => {
   if (name && !nameRegex.test(name)) {
     return res.status(400).json({ message: '이름은 2~10자 한글 또는 영문만 가능합니다.' });
   }
-
   try {
     const user = await User.scope('withPassword').findByPk(req.user.user_id);
-    const match = await bcrypt.compare(currentPassword, user.pw);
+    const match = await bcrypt.compare(currentPassword, user.password);
     if (!match) {
       return res.status(400).json({ message: '현재 비밀번호가 일치하지 않습니다.' });
     }
+
+
     await User.update(
       {
         ...(name && { name }),
-        emailNotification: emailNotification === undefined ? user.emailNotification : emailNotification
+        email_notification: emailNotification === undefined ? user.emailNotification : emailNotification
       },
       { where: { user_id: req.user.user_id } }
     );

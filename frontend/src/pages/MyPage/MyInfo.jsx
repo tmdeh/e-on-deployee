@@ -5,7 +5,6 @@ import { useAuth } from '../../hooks/useAuth';
 
 export default function MyInfo() {
   const { user, setUser } = useAuth();
-
   const [name, setName]                       = useState('');
   const [nickname, setNickname]               = useState('');
   const [emailNotification, setEmailNotification] = useState(false);
@@ -15,9 +14,9 @@ export default function MyInfo() {
   // 초기값 세팅
   useEffect(() => {
     if (user) {
-      setName(user.name);
-      setNickname(user.nickname);
-      setEmailNotification(user.emailNotification);
+      setName(user.name ?? '');
+      setNickname(user.nickname ?? '');
+      setEmailNotification(user.emailNotification ?? true);
     }
   }, [user]);
 
@@ -29,7 +28,6 @@ export default function MyInfo() {
       // PUT /api/user/me 에 name, nickname, emailNotification, currentPassword 전송
       const res = await api.put('/api/user/me', {
         name,
-        nickname,
         emailNotification,
         currentPassword
       });
@@ -38,7 +36,7 @@ export default function MyInfo() {
       // 변경된 내 정보 다시 조회해서 Context 갱신
       const me = await api.get('/api/user/me');
       setUser(me.data.user);
-
+      
       // 비밀번호 입력란 초기화
       setCurrentPassword('');
     } catch (err) {
