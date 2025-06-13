@@ -1,12 +1,11 @@
-import { createContext, useEffect, useState } from 'react';
-import api from '../api/api';
-
+import { createContext, useEffect, useState } from "react";
+import api from "../api/api";
 
 export const AuthContext = createContext();
 
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-
+  const [loading, setLoading] = useState(true);
   const signup = async ({ name, email, age, code, password, confirm }) => {
     const res = await api.post('/auth/join/step3', {
       name, email, age, code, password, confirm
@@ -27,15 +26,25 @@ function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    const refresh = async() => {
-      const res = await api.get('/auth/refresh');
-      setUser(res.data.user);
-    }
+    const refresh = async () => {
+      try {
+        const res = await api.get('/auth/refresh');
+        setUser(res.data.user);
+      } catch (e) {
+        setUser(null);
+      } finally {
+        setLoading(false); 
+      }
+    };
     refresh();
   }, []);
 
+  if (loading) {
+    return <></>;
+  }
+
   return (
-    <AuthContext.Provider value={{ user, setUser, signup, login, logout }}>
+    <AuthContext.Provider value={{ user, setUser, loading, signup, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

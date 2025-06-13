@@ -58,6 +58,7 @@ export default function SignupForm({ onFinish }) {
       setMsg('회원가입 완료!');
       onFinish();
     } catch (err) {
+      console.log(err);
       setError(err.response?.data?.message || '회원가입 실패');
     }
   };

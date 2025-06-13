@@ -129,8 +129,12 @@ exports.logout = (req, res, next) => {
   });
 };
 
-exports.refresh = async (req, res) => {
-  const userId = req.session.passport.user;
-  const user = await User.findByPk(userId);
-  return res.json({success: true, user: user.toJSON()});
+exports.refresh = async (req, res, next) => {
+  try {
+    const userId = req.session.passport.user;
+    const user = await User.findByPk(userId);
+    return res.json({success: true, user: user.toJSON()});
+  } catch (error) {
+    next(error)
+  }
 }
