@@ -4,7 +4,8 @@ const {
   getMyInfo,
   updateMyInfo,
   changePassword,
-  deactivateAccount
+  deactivateAccount,
+  deleteAccount
 } = require('../controllers/user');
 const { isLoggedIn } = require('../middleware/auth');
 
@@ -19,7 +20,10 @@ router.put('/me', isLoggedIn, updateMyInfo);
 // 비밀번호 변경
 router.put('/me/password', isLoggedIn, changePassword);
 
-// 계정 탈퇴
-router.delete('/me', isLoggedIn, deactivateAccount);
+// 계정 비활성화
+router.patch('/me/deactivate', isLoggedIn, deactivateAccount);
+
+// 계정 삭제
+router.delete('/me', isLoggedIn, deleteAccount)
 
 module.exports = router;

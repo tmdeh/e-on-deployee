@@ -1,13 +1,16 @@
 // src/pages/MyPage/DeactivateAccount.jsx
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
+import { useAuth } from "../../hooks/useAuth";
 
 export default function DeactivateAccount() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [action, setAction] = useState('deactivate'); // 'deactivate' | 'delete'
   const [msg, setMsg] = useState({ type: '', text: '' });
-  const navigate = useNavigate();
+  
+  // const navigate = useNavigate();
+  const {logout} = useAuth();
 
   const handleSubmit = async () => {
     if (!currentPassword) {
@@ -23,7 +26,8 @@ export default function DeactivateAccount() {
         setMsg({ type: 'success', text: res.data.message });
       }
       // 성공 시 2초 후 홈으로 이동
-      setTimeout(() => navigate('/'), 2000);
+      // setTimeout(() => navigate('/'), 2000);
+      await logout();
     } catch (err) {
       setMsg({
         type: 'error',

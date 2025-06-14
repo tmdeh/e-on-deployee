@@ -90,6 +90,7 @@ exports.signupStep3 = async (req, res, next) => {
       password,
       nickname: name,
       type: su.type,                    // User 모델의 'type' 컬럼
+      state_code: 'active',             // 계정 활성화
       agreements: su.agreements         // JSON 컬럼
     });
 
@@ -109,6 +110,7 @@ exports.login = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err)     return next(err);
     if (!user)   return res.status(401).json({ message: info.message });
+    if(user.dataValues.state_code === 'inactive') return res.status(401).json({success: false, message: "비활성화된 계정입니다."})
 
     req.login(user, loginErr => {
       if (loginErr) return next(loginErr);
@@ -131,7 +133,8 @@ exports.logout = (req, res, next) => {
 
 exports.refresh = async (req, res, next) => {
   try {
-    const userId = req.session.passport.user;
+    const userId = req.session.passport?.user;
+    if(!userId) return res.status(200);
     const user = await User.findByPk(userId);
     return res.json({success: true, user: user.toJSON()});
   } catch (error) {

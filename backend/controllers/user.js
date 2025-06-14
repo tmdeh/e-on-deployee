@@ -70,11 +70,12 @@ exports.changePassword = async (req, res, next) => {
   }
   try {
     const user = await User.scope('withPassword').findByPk(req.user.user_id);
-    const match = await bcrypt.compare(currentPassword, user.pw);
+    const match = await bcrypt.compare(currentPassword, user.password);
+
     if (!match) {
       return res.status(400).json({ message: '현재 비밀번호가 일치하지 않습니다.' });
     }
-    user.pw = newPassword;
+    user.password = newPassword;
     await user.save();
     res.json({ success: true, message: '비밀번호가 변경되었습니다.' });
   } catch (err) {
@@ -89,7 +90,7 @@ exports.changePassword = async (req, res, next) => {
 exports.deactivateAccount = async (req, res, next) => {
   try {
     await User.update(
-      { accountStatus: 'inactive', deactivatedAt: new Date() },
+      { state_code: 'inactive'},
       { where: { user_id: req.user.user_id } }
     );
     req.logout(() => {}); // 세션 종료
@@ -98,3 +99,14 @@ exports.deactivateAccount = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.deleteAccount = async(req, res, next)  => {
+  try {
+    await User.destroy({
+      where: {user_id: req.user.user_id}
+    });
+    res.json({success: true, message: '계정이 삭제되었습니다.'});
+  } catch (err) {
+    next(err);
+  }
+}
