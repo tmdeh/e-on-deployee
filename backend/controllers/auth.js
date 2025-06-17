@@ -8,10 +8,17 @@ const User         = require('../models/User');
 // 1단계: 회원 구분 저장
 exports.signupStep1 = (req, res) => {
   const { userType } = req.body;
-  if (!VALID_USER_TYPES.includes(userType)){
-    return res.status(400).json({massage : '유효하지 않은 회원 유형' });
+  // 1) 관리자는 접근 차단
+  if (userType === 'admin') {
+    return res.status(403).json({ message: '권한이 없습니다.' });
   }
-  req.session.signup = {type : userType};
+  // 2) 학생/부모가 아니면 에러
+  if (!VALID_USER_TYPES.includes(userType)) {
+    return res.status(400).json({ message: '유효하지 않은 회원 유형입니다.' });
+  }
+
+  // 세션에 저장
+  req.session.signup = { type: userType };
   res.json({ success: true });
 };
 
@@ -131,13 +138,8 @@ exports.logout = (req, res, next) => {
   });
 };
 
-exports.refresh = async (req, res, next) => {
-  try {
-    const userId = req.session.passport?.user;
-    if(!userId) return res.status(200).json({message: "인증 필요"});
-    const user = await User.findByPk(userId);
-    return res.json({success: true, user: user.toJSON()});
-  } catch (error) {
-    next(error)
-  }
+exports.refresh = async (req, res) => {
+  const userId = req.session.passport.user;
+  const user = await User.findByPk(userId);
+  return res.json({success: true, user: user.toJSON()});
 }

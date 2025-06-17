@@ -1,11 +1,15 @@
-import { createContext, useEffect, useState } from "react";
-import api from "../api/api";
+// src/contexts/AuthContext.jsx
+import { createContext, useState } from 'react';
 
 export const AuthContext = createContext();
 
+// 마이페이지 리다이렉션 문제 해결 
+// AuthContext에서 user === undefined 상태랑 loading을 구분해서 제공 
 function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(undefined); // 
   const [loading, setLoading] = useState(true);
+
+
   const signup = async ({ name, email, age, code, password, confirm }) => {
     const res = await api.post('/auth/join/step3', {
       name, email, age, code, password, confirm
@@ -26,23 +30,24 @@ function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    const refresh = async () => {
-      const res = await api.get('/auth/refresh');
-      setLoading(false);
-      if(res.data.user) {
-        return setUser(res.data.user);
+    const refresh = async() => {
+      console.log("🔁 refresh called");
+      try {
+        const res = await api.get('/auth/refresh');
+        console.log("✅ refresh success", res.data.user);
+        setUser(res.data.user);
+      } catch {
+        console.log("❌ refresh failed");
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
-      setUser(null);
     };
     refresh();
   }, []);
 
-  if (loading) {
-    return <></>;
-  }
-
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, signup, login, logout }}>
+    <AuthContext.Provider value={{ user,loading, signup, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

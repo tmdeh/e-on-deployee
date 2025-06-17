@@ -29,6 +29,7 @@ const User = sequelize.define('User', {
   password: {
     type: DataTypes.STRING(255),
     allowNull: false,
+    field : 'pw',
   },
   type: {
     type: DataTypes.ENUM('student','parent','admin'),

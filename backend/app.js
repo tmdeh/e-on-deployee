@@ -15,6 +15,9 @@ require('./config/passport')();
 
 const app = express();
 
+// 프록시 환경에서 사용 
+app.set('trust proxy', 1);
+
 // 업로드 폴더 정적 서빙
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
