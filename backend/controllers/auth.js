@@ -134,7 +134,7 @@ exports.logout = (req, res, next) => {
 exports.refresh = async (req, res, next) => {
   try {
     const userId = req.session.passport?.user;
-    if(!userId) return res.status(200);
+    if(!userId) return res.status(200).json({message: "인증 필요"});
     const user = await User.findByPk(userId);
     return res.json({success: true, user: user.toJSON()});
   } catch (error) {

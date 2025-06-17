@@ -27,14 +27,12 @@ function AuthProvider({ children }) {
 
   useEffect(() => {
     const refresh = async () => {
-      try {
-        const res = await api.get('/auth/refresh');
-        setUser(res.data.user);
-      } catch (e) {
-        setUser(null);
-      } finally {
-        setLoading(false); 
+      const res = await api.get('/auth/refresh');
+      setLoading(false);
+      if(res.data.user) {
+        return setUser(res.data.user);
       }
+      setUser(null);
     };
     refresh();
   }, []);
