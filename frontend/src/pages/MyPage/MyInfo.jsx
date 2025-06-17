@@ -33,6 +33,8 @@ export default function MyInfo() {
       });
       setMessage({ type: 'success', text: res.data.message });
 
+      console.log({res});
+
       // 변경된 내 정보 다시 조회해서 Context 갱신
       const me = await api.get('/api/user/me');
       setUser(me.data.user);
@@ -40,6 +42,7 @@ export default function MyInfo() {
       // 비밀번호 입력란 초기화
       setCurrentPassword('');
     } catch (err) {
+      console.log(err);
       setMessage({
         type: 'error',
         text: err.response?.data?.message || '수정에 실패했습니다.'
