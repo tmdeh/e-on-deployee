@@ -128,6 +128,7 @@ exports.signupStep3 = async (req, res, next) => {
             age,
             password,
             // nickname: name, // 테이블 구조와 달라서 주석 처리
+            state_code: "active",
             type: su.type, // User 모델의 'type' 컬럼
             agreements: su.agreements, // JSON 컬럼
         });
@@ -151,7 +152,7 @@ exports.login = (req, res, next) => {
       console.log("🧨 로그인 시도 유저:", {
         id: user.user_id,
         email: foundUser.email,
-        accountStatus: foundUser.accountStatus,
+        accountStatus: foundUser.state_code,
       });
 
       // 강제 차단 테스트
@@ -160,7 +161,7 @@ exports.login = (req, res, next) => {
         return res.status(403).json({ message: '유저 없음' });
       }
 
-      if (foundUser.accountStatus !== 'active') {
+      if (foundUser.state_code !== 'active') {
         console.log("🚫 비활성화 계정 로그인 시도 차단됨");
         return res.status(403).json({ message: '비활성화된 계정입니다.' });
       }

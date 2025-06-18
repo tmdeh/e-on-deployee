@@ -16,10 +16,10 @@ export default function DeactivateAccount() {
     }
     try {
       if (action === 'deactivate') {
-        const res = await api.patch('/api/user/me/deactivate', { currentPassword });
+        const res = await api.delete('/api/user/me', { currentPassword });
         setMsg({ type: 'success', text: res.data.message });
       } else {
-        const res = await api.delete('/api/user/me', { data: { currentPassword } });
+        const res = await api.patch('/api/user/me', { data: { currentPassword } });
         setMsg({ type: 'success', text: res.data.message });
       }
       // 성공 시 2초 후 홈으로 이동

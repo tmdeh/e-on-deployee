@@ -17,24 +17,22 @@ export default function MyInfo() {
     if (user) {
       setName(user.name);
       setNickname(user.nickname);
-      setEmailNotification(user.emailNotification);
+      setEmailNotification(user.email_notification);
     }
   }, [user]);
-
+  
   const handleSubmit = async e => {
     e.preventDefault();
     setMessage({ type: '', text: '' });
-
     try {
       // PUT /api/user/me 에 name, nickname, emailNotification, currentPassword 전송
       const res = await api.put('/api/user/me', {
         name,
-        nickname,
+        // nickname,
         emailNotification,
         currentPassword
       });
       setMessage({ type: 'success', text: res.data.message });
-
       // 변경된 내 정보 다시 조회해서 Context 갱신
       const me = await api.get('/api/user/me');
       setUser(me.data.user);

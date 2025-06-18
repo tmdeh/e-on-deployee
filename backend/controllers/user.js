@@ -37,17 +37,18 @@ exports.updateMyInfo = async (req, res, next) => {
   if (name && !nameRegex.test(name)) {
     return res.status(400).json({ message: '이름은 2~10자 한글 또는 영문만 가능합니다.' });
   }
-
+  
   try {
     const user = await User.scope('withPassword').findByPk(req.user.user_id);
-    const match = await bcrypt.compare(currentPassword, user.pw);
+    const match = await bcrypt.compare(currentPassword, user.password);
     if (!match) {
       return res.status(400).json({ message: '현재 비밀번호가 일치하지 않습니다.' });
     }
+    
     await User.update(
       {
         ...(name && { name }),
-        emailNotification: emailNotification === undefined ? user.emailNotification : emailNotification
+        email_notification: emailNotification === undefined ? user.emailNotification : emailNotification
       },
       { where: { user_id: req.user.user_id } }
     );
@@ -69,11 +70,11 @@ exports.changePassword = async (req, res, next) => {
   }
   try {
     const user = await User.scope('withPassword').findByPk(req.user.user_id);
-    const match = await bcrypt.compare(currentPassword, user.pw);
+    const match = await bcrypt.compare(currentPassword, user.password);
     if (!match) {
       return res.status(400).json({ message: '현재 비밀번호가 일치하지 않습니다.' });
     }
-    user.pw = newPassword;
+    user.password = newPassword;
     await user.save();
     res.json({ success: true, message: '비밀번호가 변경되었습니다.' });
   } catch (err) {
@@ -88,7 +89,7 @@ exports.changePassword = async (req, res, next) => {
 exports.deactivateAccount = async (req, res, next) => {
   try {
     await User.update(
-      { accountStatus: 'inactive', deactivatedAt: new Date() },
+      { state_code: 'inactive', deactivatedAt: new Date() },
       { where: { user_id: req.user.user_id } }
     );
     req.logout(() => {}); // 세션 종료
